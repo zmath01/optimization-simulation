@@ -108,3 +108,6 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: .6rem 1.8rem; justify-conten
   summary span { display: block; margin-left: .95rem; }
   .chart, .bench-notes, .case, .example-grid article { padding-inline: .95rem; }
 }
+
+#pulse-result { color: var(--green); }
+#pulse-hit-rate { width: 100%; margin-top: .45rem; accent-color: var(--green); }

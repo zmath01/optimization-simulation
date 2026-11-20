@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="PLC 与嵌入式的工程边界、MIT OCW 课程、优化仿真工具和硬件实测方法。">
+  <title>PLC 与嵌入式｜Open Simulation &amp; Optimization</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="plc-timing.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+<header class="top">
+  <div class="wrap top-inner">
+    <a class="brand" href="./" lang="en"><span aria-hidden="true">∿</span> Open Simulation</a>
+    <nav aria-label="本页导航">
+      <a href="#roles">工程分工</a><a href="#ocw">MIT OCW</a><a href="#tools">软件</a><a href="#experiments">实验</a><a href="#validation">实测</a>
+    </nav>
+    <a class="repo" href="https://github.com/zmath01/optimization-simulation">GitHub ↗</a>
+  </div>
+</header>
+<main id="main">
+  <div class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <h1>PLC 与嵌入式</h1>
+        <p class="lede">从传感器、电路和实时控制，到可优化的模型与可复核的硬件实验。</p>
+        <a class="button primary" href="#ocw">查看 MIT 章节 ↓</a>
+        <a class="button secondary" href="#experiments">试短脉冲仿真</a>
+      </div>
+      <div class="hero-side" aria-label="典型系统分工">
+        <p>同一台设备上的分工</p>
+        <a href="#roles"><span>产线节拍、互锁、报警</span><strong>PLC · 工业控制</strong></a>
+        <a href="#roles"><span>采样、定时器、驱动</span><strong>MCU · 嵌入式</strong></a>
+        <a href="#validation"><span>时序、误差、故障复现</span><strong>仪器与实测</strong></a>
+      </div>
+    </div>
+  </div>
+  <section class="wrap section" id="roles">
+    <div class="section-heading"><h2>电气、电子、模拟、数字怎么分</h2><p><strong>电气／电子／计算机工程</strong>描述工程对象和工作内容。<strong>模拟／数字</strong>描述信号或计算的实现方式。一个 PLC 控制柜或一块 MCU 板通常会同时涉及两类信号。</p></div>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="PLC 与嵌入式分工">
+    <table><thead><tr><th scope="col">层级</th><th scope="col">PLC 应用</th><th scope="col">嵌入式应用</th></tr></thead><tbody>
+      <tr><th scope="row">系统与工程归属</th><td>常见于工业电气、自动化、仪控。控制成套设备、产线和过程，维护 I/O 表、互锁、报警、HMI 和现场总线。</td><td>固件常落在嵌入式软件或计算机工程，板级设计属于电子工程，电机与转换器的控制还涉及控制和功率电子。</td></tr>
+      <tr><th scope="row">数字逻辑与执行</th><td>多个任务可分别周期或事件触发。常见做法是在周期任务上读取过程映像、执行顺控再驱动输出。IEC 61131-3 包括 ST、LD 和 FBD。</td><td>MCU、SoC 或专用控制器运行 C/C++ 等固件。GPIO、定时器、PWM、DMA、ISR、中断优先级与 RTOS 决定事件和时序行为。</td></tr>
+      <tr><th scope="row">模拟与电气接口</th><td>数字量端口也有阈值、隔离与滤波。温度、压力、流量可由模拟量模块或数字总线读入。柜侧还会接触传感器、继电器、驱动与供电。</td><td>传感器调理、抗混叠、ADC、DAC、参考电压和电源设计属于板级电子。固件处理离散样本，还得考虑量化、溢出与时基。</td></tr>
+      <tr><th scope="row">同机协作</th><td>例如产线 PLC 发速度给定、检查看门狗和就绪位、处理下游阻塞。</td><td>驱动器内部 MCU 或 DSP 执行电流环、速度环与保护，向 PLC 回报状态。采样和控制频率按各环路设计。</td></tr>
+    </tbody></table></div>
+    <p>PLC 本体可以是工业化的嵌入式产品。选自学路线时，先决定想做设备级集成，还是设备内部的电路与固件。<a href="https://webstore.iec.ch/en/publication/68533">IEC 61131-3</a> · <a href="https://support.industry.siemens.com/cs/attachments/59193558/s71500_cycle_and_reaction_times_function_manual_en-US_en-US.pdf">Siemens S7-1500 周期和响应时间</a> · <a href="https://web.mit.edu/course/6/6.115/www/page/course-objectives.html">MIT 6.115 微控制器实验</a></p>
+  </section>
+
+  <section class="wrap section" id="ocw">
+    <div class="section-heading"><h2>MIT OCW 按章节自学</h2><p>两个方向共用状态机、采样和控制基础。PLC 路线先做顺控、报警和低速过程环。嵌入式路线再加电路、CPU 外设、时序和同步。</p></div>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="MIT OCW 章节及练习">
+    <table><thead><tr><th scope="col">方向</th><th scope="col">课程与准确章节</th><th scope="col">学完交付物</th></tr></thead><tbody>
+      <tr><th scope="row">共同基础 · 顺控</th><td>6.01SC Spring 2011，Unit 1 <em>State Machines</em>，Unit 2 <em>Characterizing System Performance</em> 和 <em>Designing Control Systems</em>。<a href="https://ocw.mit.edu/courses/6-01sc-introduction-to-electrical-engineering-and-computer-science-i-spring-2011/">课程目录</a></td><td>为上料、检测、下料画状态迁移表，并写下超时、复位和重复确认时的期望行为。</td></tr>
+      <tr><th scope="row">电路 · 传感器前端</th><td>6.002 Spring 2007，第 2–4 讲电路分析与数字抽象，第 12 讲电容与一阶系统，第 19–20 讲运放及其应用。<a href="https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/pages/lecture-notes/">讲义</a></td><td>计算 RC 截止频率和阶跃时间。在 ngspice 中扫 R/C 容差，说明噪声抑制和响应速度何时冲突。</td></tr>
+      <tr><th scope="row">采样 · ADC</th><td>6.003 Fall 2011，第 2 讲离散时间系统，第 7 讲连续系统的离散近似，第 21–22 讲采样与量化。<a href="https://ocw.mit.edu/courses/6-003-signals-and-systems-fall-2011/pages/lecture-notes/">讲义</a></td><td>比较原始波形和不同采样率的重建，测 ADC 码值变化。区分连续信号混叠与离散事件漏采。</td></tr>
+      <tr><th scope="row">PLC · 温控与反馈</th><td>2.14 Spring 2014，第 3 讲 PID，第 7–9 讲裕度与环路整形，第 15–17 讲离散控制。配套 Lab 2 热控制和 Lab 3 PI/PID。<a href="https://ocw.mit.edu/courses/2-14-analysis-and-design-of-feedback-control-systems-spring-2014/pages/calendar/">课程日程</a> · <a href="https://ocw.mit.edu/courses/2-14-analysis-and-design-of-feedback-control-systems-spring-2014/pages/labs/">实验讲义</a></td><td>标定热时间常数，交付设定值跟踪、扰动恢复、执行器饱和和抗积分饱和对照图。</td></tr>
+      <tr><th scope="row">嵌入式 · 时序与固件</th><td>6.004 Spring 2009，第 5–7 讲时序逻辑、状态机和亚稳态，第 19 讲中断与实时问题。6.111 Spring 2006，L3–L6 的 Verilog、时序逻辑、有限状态机及同步适合 FPGA 分支。<a href="https://ocw.mit.edu/courses/6-004-computation-structures-spring-2009/pages/lecture-notes/">6.004</a> · <a href="https://ocw.mit.edu/courses/6-111-introductory-digital-systems-laboratory-spring-2006/pages/lecture-notes/">6.111</a></td><td>用波形验证异步输入的边界条件，分开验证漏采和跨时钟域亚稳态。MCU 外设再做定时器、ADC、ISR 的小项目，可参考 MIT 6.115 的课程站。<a href="https://web.mit.edu/course/6/6.115/www/page/course-objectives.html">6.115 课程站</a></td></tr>
+      <tr><th scope="row">优化 · 排程</th><td>15.053 Spring 2013，L2–L3 线性建模和几何，L10–L12 整数规划、建模和分支定界。<a href="https://ocw.mit.edu/courses/15-053-optimization-methods-in-management-science-spring-2013/pages/lecture-notes/">讲义</a></td><td>把工位占用和处理顺序写为约束，比较吞吐、交期和缓冲。用离散事件模型复核阻塞和故障恢复。</td></tr>
+    </tbody></table></div>
+    <p>MIT 材料用于数学、电路和控制基础。PLC 实装还要从设备手册学习过程映像、I/O 模块、通讯、硬件组态及诊断。嵌入式实装要从目标 MCU 的参考手册学习 ADC、定时器、DMA、RTOS 或裸机约束。<a href="https://support.industry.siemens.com/cs/attachments/59193558/s71500_cycle_and_reaction_times_function_manual_en-US_en-US.pdf">Siemens 周期手册</a></p>
+  </section>
+  <section class="wrap section" id="tools">
+    <div class="section-heading"><h2>按问题选仿真和优化软件</h2><p>排序顺序、控制器整定、电路容差和固件时限需要不同模型。每种工具都要用能够观察该层行为的验收量来验证。</p></div>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="软件、算法与适用边界">
+    <table><thead><tr><th scope="col">工程问题</th><th scope="col">软件／算法</th><th scope="col">验证对象与边界</th></tr></thead><tbody>
+      <tr><th scope="row">PLC 状态、握手与 HMI</th><td>Python 回放用来起步。Beremiz 可练开源软 PLC。Siemens 项目用 STEP 7 / TIA Portal、匹配的 S7-PLCSIM 或 Advanced 和目标 WinCC 运行时。<a href="https://beremiz.readthedocs.io/en/stable/overview.html">Beremiz</a> · <a href="https://sieportal.siemens.com/en-us/products-services/10317038">Siemens</a></td><td>核对重复托盘、网络超时、报警与复位。供应商软件的版本、仿真范围和授权以对应项目为准。软 PLC 运行结果应在目标运行时和模块上复核。</td></tr>
+      <tr><th scope="row">嵌入式固件、外设与 FPGA</th><td>Zephyr native_sim 做主机行为测试；Renode 用其已经建模的目标和外设跑固件；Icarus、Verilator、GHDL 对应支持的 HDL。<a href="https://docs.zephyrproject.org/latest/boards/native/native_sim/doc/index.html">Zephyr</a> · <a href="https://renode.readthedocs.io/en/latest/introduction/supported-boards.html">Renode</a> · <a href="./#electronics">数字工具安装</a></td><td>将状态机移出驱动层进行单测。目标板要量最坏中断延迟、采样抖动、总线和资源竞争。FPGA 实装还需时序收敛和跨时钟域检查。</td></tr>
+      <tr><th scope="row">连续过程与 PI/MPC</th><td>Python、SciPy、python-control 做辨识和控制。OpenModelica 可建电、热、机械耦合模型。先用有边界的最小二乘拟合，再用网格、灵敏度或约束优化选参。<a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.least_squares.html">SciPy</a> · <a href="https://python-control.readthedocs.io/en/latest/">python-control</a> · <a href="./#numerics">OpenModelica 安装</a></td><td>先定超调、稳定、时限和饱和约束。将准则应用于多个温度、负载、测量偏置和时延场景。较复杂预测控制才引入 QP 或 CasADi 等工具，部署前检验求解时限和超时行为。<a href="./#solvers">优化求解器对照</a></td></tr>
+      <tr><th scope="row">传感器前端与功率板</th><td>KiCad/ngspice 做 AC、瞬态或噪声分析，换容差角点、温漂和器件模型。小型标准值组合可枚举；昂贵黑箱可先做试验设计与代理模型。<a href="https://www.kicad.org/discover/spice/">KiCad SPICE</a> · <a href="./#examples">RC 样例</a></td><td>优化滤波、采样失真、纹波和功耗时，保留负载、温度和供电边界。实板验证寄生、参考电压及接地相关效应。</td></tr>
+      <tr><th scope="row">产线流转与离线排程</th><td>SimPy 模拟排队和停机；HiGHS MILP 或 OR-Tools CP-SAT 试排设备资源、缓冲和时间窗。<a href="https://simpy.readthedocs.io/en/latest/">SimPy</a> · <a href="https://highs.dev/">HiGHS</a> · <a href="https://developers.google.com/optimization/cp/cp_solver">CP-SAT</a></td><td>把吞吐和在制品统计建立在换型、故障、工序时间数据上。排程计算可离线或在上位机进行，PLC 在设备层执行已验证的规则。</td></tr>
+    </tbody></table></div>
+    <p><strong>嵌入式侧的优化例子。</strong> 对定时采样的振动节点，在 Python 中枚举采样率、滤波阶数和定点位宽。先以通带误差、溢出和可用 RAM 作约束，再比较计算时间和能耗。用同一波形对照浮点参考与定点结果，最终在目标板记录 DMA／中断负载、最慢路径和耗电。</p>
+    <div class="note"><strong>运行层与建模层。</strong> Python 适合模型复现、离线优化和测试。控制任务选目标 PLC 周期任务或经过时限验证的固件。衡量从输入变化到物理输出的时间，预算还包括 I/O 滤波、总线刷新和驱动执行。</div>
+  </section>
+
+  <section class="performance" id="experiments">
+    <div class="wrap section">
+      <div class="section-heading"><h2>两个实验说明仿真能预测什么</h2><p>这两个练习使用合成输入。一个隔离采样相位，另一个量化不同工况下 PI 参数的取舍。</p></div>
+      <div class="two">
+        <article class="chart">
+          <h3>短脉冲能被 PLC 看到吗？</h3>
+          <p>设扫描固定，输入采样瞬时且无滤波。脉冲从任一整数毫秒相位开始，结束时回低。扫描恰好落在高电平区间才算命中。</p>
+          <div class="calc-inputs" id="pulse-inputs">
+            <label for="scan-ms">扫描周期（ms）</label><input type="number" id="scan-ms" min="1" max="1000" step="1" value="10" required>
+            <label for="pulse-ms">高电平宽度（ms）</label><input type="number" id="pulse-ms" min="1" max="1000" step="1" value="6" required>
+            <output id="pulse-result" for="scan-ms pulse-ms" aria-live="polite">6 / 10 个相位命中，4 个漏采。命中时最大等待 5 ms。</output>
+          </div>
+          <progress id="pulse-hit-rate" aria-label="整数毫秒相位命中比例" value="6" max="10">6 / 10</progress>
+          <p><small>这是相位覆盖结果。真实事件到达可能和设备周期相关，现场漏采率需要实测。</small></p>
+        </article>
+        <article class="bench-notes">
+          <h3>把漏采变成测试</h3>
+          <p>在上料 → 检测 → 下料的虚拟练习中，传感器可能只在托盘经过时发出 6 ms 脉冲。若输入采样间隔 10 ms，测试只把信号放在扫描开始就会得到过于乐观的结果。</p>
+          <p>逐相位扫脉冲，跨工位用托盘 ID 和请求／确认保持事件。缩短轮询周期、按设备支持选硬件锁存或高速计数，或由上游保持事件直到下游确认。把各方法的延迟、计数丢失、重复确认和重启恢复放进同一张测试表。</p>
+          <p>用输入与输出端的实测时间戳检验端到端延迟。过程映像有刷新时序，输入模块可能先做滤波。高优先级任务、网络与输出模块也可能改变响应。<a href="https://support.industry.siemens.com/cs/attachments/59193558/s71500_cycle_and_reaction_times_function_manual_en-US_en-US.pdf">Siemens 响应时间手册</a></p>
+        </article>
+      </div>
+      <h3>PI 整定要在偏离名义条件时复核</h3>
+      <p>对一阶热系统 <code>C dT/dt = P u − H(T − Tₐ)</code>，在每秒保持输出 <code>u ∈ [0,1]</code>，将热容、散热系数、功率、环境温度、传感器偏置与滞后作为工况输入。模型用 300 s 运行、38 °C 设定值和相同的额外散热扰动。控制器反馈来自模拟传感器。跟踪误差和超调按模型真实温度计算。</p>
+      <p>枚举 25 组 PI 参数。名义法只用基准工况；情景法要求三个训练工况均无故障且超调 ≤ 2 °C，再最小化训练工况中的最大代价。代价为绝对温差积分加上系数 0.002 °C·s/J 乘模型能量，系数可按应用目标重设。</p>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="合成温控优化结果">
+      <table><thead><tr><th scope="col">方案</th><th scope="col">Kp / Ki</th><th scope="col">暖环境、慢传感器超调</th><th scope="col">最大训练代价</th><th scope="col">保留工况超调</th></tr></thead><tbody>
+        <tr><th scope="row">名义最优</th><td>0.20 / 0.009</td><td>3.122 °C，超过约束</td><td>784.42 °C·s</td><td>1.419 °C</td></tr>
+        <tr><th scope="row">多情景最坏值优化</th><td>0.12 / 0.0025</td><td>1.827 °C，满足约束</td><td>909.26 °C·s</td><td>1.416 °C</td></tr>
+      </tbody></table></div>
+      <p>25 组中 5 组对三个训练工况都可行。情景法为减少所选工况的超调，接受了更高的最坏跟踪与能量代价。单个未参与训练的合成工况提供额外的复核点。不同参数范围、未建模故障和现场数据都可能改变结论。</p>
+    </div>
+  </section>
+
+  <section class="wrap section" id="validation">
+    <div class="section-heading"><h2>实测会出现仿真没预测到的现象吗？</h2><p><strong>会。</strong>模型可以提前预见已考虑的机制和边界。未知的耦合、错误的初始条件或不足的测量带宽，可能让结果偏离仿真。遇到偏差时先定位哪一段出现差异，再决定是否改模型。</p></div>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="现场偏差和实验方法">
+    <table><thead><tr><th scope="col">偏差来源</th><th scope="col">典型现场表现</th><th scope="col">怎么验证或缩小范围</th></tr></thead><tbody>
+      <tr><th scope="row">参数与外部工况</th><td>传感器偏置随温度漂移；负载、散热或摩擦与名义值不同。</td><td>记录工况和设备批次，重复试验并用独立工况验证。不同工况下若偏差有结构，考虑更新模型；缺少分布证据时用区间或角点。</td></tr>
+      <tr><th scope="row">被省略的物理机制</th><td>执行器死区、饱和、齿隙、热梯度、供电跌落或开关干扰引起复位。</td><td>同时记录指令与物理反馈，并对准时间戳。用受控 A/B 实验隔离供电、负载、滤波或机械变化。</td></tr>
+      <tr><th scope="row">时序、协议与软件</th><td>偶发脉冲漏采、丢帧、重连后的旧数据、任务抢占或并发竞态。</td><td>逐相位注入事件，复现断续通讯及重启，用序号和新鲜度检查重复、丢失和过期。量延迟分布的尾部与观测到的最大延迟，并报告样本数。</td></tr>
+      <tr><th scope="row">测量链与数值误差</th><td>示波器采样或探测条件改变波形，ADC 参考或标定产生偏差；仿真步长也能改变峰值。</td><td>记录仪器、带宽、同步与校准，量重复性和系统性影响，比较独立仪器。对仿真做步长、容差与单位检查。<a href="https://www.nist.gov/publications/nistsematech-engineering-statistics-handbook-chapter-2-measurement-process">NIST 测量过程</a></td></tr>
+    </tbody></table></div>
+    <p>非线性是可建模的系统性质，饱和与回差就是例子。不确定性也可出现在确定的线性模型中，例如热容参数不精确。蒙特卡洛只传播选定输入的概率模型。它覆盖的范围取决于假设和数据，未建模的故障需要通过观测、故障注入或更接近实际的台架寻找。</p>
+    <h3>从仿真到硬件，保留同一条验收用例</h3>
+    <ol>
+      <li>在离线模型中写清状态、边界、输入、输出和阈值。用确定性回放测试最小脉宽、阻塞、故障首因和安全恢复条件。</li>
+      <li>用软件在环（SIL）验证模拟 PLC 或固件的实现。用硬件在环（HIL）连接真实控制器与受控 I/O 或实时装置模拟器，把任务时序和接口拉进测试范围。</li>
+      <li>用受控台架记录物理输入、控制器采样、控制输出和执行器反馈。锁定软硬件版本，用一部分工况辨识、另一部分做验证。保留原始日志、测量不确定度、失败用例和改善后的复测。</li>
+    </ol>
+    <p>已量到的最大值是观测到的最大值。要给出时限保证，还需要对应系统的覆盖范围、测试边界和时序分析。<a href="https://www.nist.gov/pml/nist-technical-note-1297">NIST 测量不确定度指引</a></p>
+  </section>
+</main>
+<footer><div class="wrap"><strong>Open Simulation &amp; Optimization</strong><a href="./">返回仿真与优化指南 ↗</a></div></footer>
+</body>
+</html>

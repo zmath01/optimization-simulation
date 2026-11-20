@@ -14,7 +14,7 @@
   <div class="wrap top-inner">
     <a class="brand" href="#main"><span aria-hidden="true">∿</span> Open Simulation</a>
     <nav aria-label="Guide sections">
-      <a href="#install">Install</a><a href="#solvers">Solvers</a><a href="#performance">HPC</a><a href="#industry">Industry</a><a href="#examples">Examples</a>
+      <a href="#install">Install</a><a href="#solvers">Solvers</a><a href="#performance">HPC</a><a href="#industry">Industry</a><a href="#examples">Examples</a><a href="plc-embedded.html">PLC / Embedded</a>
     </nav>
     <a class="repo" href="https://github.com/zmath01/optimization-simulation">GitHub ↗</a>
   </div>
@@ -103,6 +103,7 @@ paraFoam</code></pre>
           <tr><th scope="row">RF and electromagnetic fields</th><td>Install the openEMS Windows build or follow the Linux build instructions. Start with the upstream transmission-line or antenna examples. <a href="https://www.openems.de/">openEMS downloads and docs</a></td><td>Use the FDTD solver for microwave structures, antenna response and S-parameters. Refine the mesh and compare port impedance, boundaries and losses with measurements.</td></tr>
           <tr><th scope="row">Grid and distribution</th><td>Install via <code>python -m pip install pandapower OpenDSSDirect.py</code>. <a href="https://www.pandapower.org/start/">pandapower</a> · <a href="https://dss-extensions.org/OpenDSSDirect.py/notebooks/Installation.html">OpenDSSDirect.py</a></td><td>Use pandapower for load flow and supported OPF studies, or OpenDSSDirect.py for distribution feeder studies. Check topology, voltage, transformer/line ratings and unbalance with the actual feeder model. Switching-converter waveforms require circuit or electromagnetic-transient models.</td></tr>
         </tbody></table></div>
+        <p>For industrial control and firmware, see the <a href="plc-embedded.html">PLC and embedded systems guide</a> for MIT OCW chapters, simulation tools and hardware validation.</p>
         <p><strong>Analog optimization.</strong> Search stock component values with tolerance corners when the design space is small. For expensive SPICE evaluations, use space-filling trials and a surrogate or Bayesian optimization, then verify finalists with the original simulator and bench measurements. For digital optimization, use synthesis and timing feedback to compare pipelining, bit widths, clock targets and resource sharing.</p>
       </div>
     </details>

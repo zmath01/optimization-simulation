@@ -4,6 +4,7 @@ A practical guide to open-source engineering simulation, electrical tools, numer
 
 - [Read the GitHub Pages guide](https://zmath01.github.io/optimization-simulation/)
 - [Browse the site and runnable examples](docs/)
+- [PLC 与嵌入式：MIT OCW、仿真与实测](https://zmath01.github.io/optimization-simulation/plc-embedded.html)
 
 To preview locally, run `python -m http.server 8000 --directory docs` from the repository root and open `http://localhost:8000/`. Example commands, dependencies, assumptions and validation notes are in the guide.
 
