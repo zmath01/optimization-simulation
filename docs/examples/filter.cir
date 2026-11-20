@@ -1,0 +1,15 @@
+* Nominal two-stage low-pass filter. Ideal isolating buffer.
+Vin in 0 DC 0 AC 1
+R1 in stage1 3.3k
+C1 stage1 0 100n
+Ebuf buffered 0 stage1 0 1
+R2 buffered out 3.3k
+C2 out 0 100n
+.control
+ac dec 100 10 100000
+let response_db = db(v(out))
+meas ac pass_100hz find response_db at=100
+meas ac stop_10khz find response_db at=10000
+quit
+.endc
+.end

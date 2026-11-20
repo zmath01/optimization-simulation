@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A practical field guide to open-source engineering simulation, solver selection, HPC and industrial optimization.">
+  <title>Open Simulation &amp; Optimization</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="wrap top-inner">
+    <a class="brand" href="#main"><span aria-hidden="true">∿</span> Open Simulation</a>
+    <nav aria-label="Guide sections">
+      <a href="#install">Install</a><a href="#solvers">Solvers</a><a href="#performance">HPC</a><a href="#industry">Industry</a><a href="#examples">Examples</a>
+    </nav>
+    <a class="repo" href="https://github.com/zmath01/optimization-simulation">GitHub ↗</a>
+  </div>
+</header>
+<main id="main">
+  <div class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">Engineering field guide</p>
+        <h1>Open Simulation<br>&amp; Optimization</h1>
+        <p class="lede">Install open-source tools, choose a solver, and build models you can check against measurements.</p>
+        <a class="button primary" href="#install">Start with installation ↓</a>
+        <a class="button secondary" href="#examples">Run the examples</a>
+      </div>
+      <div class="hero-side" aria-label="Recommended starting tools">
+        <p>Pick a starting stack</p>
+        <a href="#numerics"><span>Numerics &amp; controls</span><strong>SciPy / OpenModelica</strong></a>
+        <a href="#fluid"><span>Fluids &amp; heat transfer</span><strong>OpenFOAM / SU2</strong></a>
+        <a href="#electronics"><span>Analog &amp; digital circuits</span><strong>ngspice / Verilator</strong></a>
+        <a href="#multiphysics"><span>Custom PDEs &amp; HPC</span><strong>FEniCSx / PETSc</strong></a>
+      </div>
+    </div>
+  </div>
+
+  <section class="wrap section" id="install">
+    <div class="section-heading"><p class="eyebrow">Tool selection</p><h2>Install by engineering domain</h2><p>Use native Windows tools for desktop schematics and scripting. Use Ubuntu or Windows Subsystem for Linux 2 (WSL 2) for the Linux-first CFD and HPC workflows below. Commands target Ubuntu 24.04 LTS and Python 3.12 unless stated.</p></div>
+
+    <details id="numerics" open>
+      <summary>Numerical computing and system simulation <span>MATLAB / Simulink alternatives</span></summary>
+      <div class="detail-body">
+        <div class="table-wrap" tabindex="0" role="region" aria-label="Numerical simulation tools">
+        <table><thead><tr><th scope="col">Tool</th><th scope="col">Best fit</th><th scope="col">Installation and first check</th></tr></thead><tbody>
+          <tr><th scope="row">GNU Octave</th><td>MATLAB-style matrix calculations and compatible scripts. Audit toolboxes, graphics and syntax against your code.</td><td>Windows installer or Ubuntu <code>sudo apt install octave</code>. Run <code>octave --version</code>. <a href="https://gnu-octave.github.io/download.html">Official downloads</a></td></tr>
+          <tr><th scope="row">Scilab / Xcos</th><td>Numerics and visual block diagrams for controller and dynamic-system models. Rebuild and validate block models when moving between ecosystems.</td><td>Use the OS-specific package, open Scilab and run <code>xcos()</code>. <a href="https://www.scilab.org/download">Official downloads</a></td></tr>
+          <tr><th scope="row">OpenModelica</th><td>Equation-based ODE/DAE models of coupled thermal, fluid, electrical and mechanical systems. FMI can connect subsystem models where the toolchain supports it.</td><td>Use the signed Windows installer or follow the Linux repository instructions. In OMEdit, simulate the Modelica Standard Library’s <code>Modelica.Blocks.Examples.PID_Controller</code>. <a href="https://openmodelica.org/free-and-open-source-software/download/">Official downloads</a> · <a href="https://fmi-standard.org/">FMI standard</a></td></tr>
+          <tr><th scope="row">Python</th><td>Numerics, experimental data, model calibration, sweeps, testing, and deployment automation. NumPy/SciPy provide the numerical base. Add the domain solver you need.</td><td>Create a virtual environment and install NumPy and SciPy using the commands below. <a href="https://scipy.org/install/">SciPy installation</a></td></tr>
+        </tbody></table></div>
+        <div class="two">
+          <div><h3>Ubuntu or WSL bash</h3><pre><code>sudo apt update
+sudo apt install python3-venv
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install numpy scipy matplotlib</code></pre></div>
+          <div><h3>Windows PowerShell</h3><pre><code>py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install numpy scipy matplotlib
+.\.venv\Scripts\python.exe -c "import numpy, scipy; print(scipy.__version__)"</code></pre></div>
+        </div>
+      </div>
+    </details>
+
+    <details id="fluid" open>
+      <summary>Fluid mechanics and heat transfer <span>ANSYS Fluent / CFX alternatives</span></summary>
+      <div class="detail-body">
+        <p><strong>OpenFOAM Foundation</strong> is a C++ finite-volume toolbox for internal and external flows, turbulence and conjugate heat transfer. <strong>SU2</strong> is a C++ CFD suite with adjoint-based design tools for differentiable objectives such as drag and pressure losses. For enclosure and duct work, start with OpenFOAM and ParaView. Consider SU2 when geometry sensitivities are central to the workflow. Keep OpenFOAM Foundation and OpenCFD releases paired with their own tutorials, dictionaries and command syntax. <a href="https://openfoam.org/download/">OpenFOAM Foundation</a> · <a href="https://www.openfoam.com/download">OpenCFD releases</a> · <a href="https://su2code.github.io/docs_v7/Installation/">SU2 installation</a> · <a href="https://www.paraview.org/download/">ParaView</a></p>
+        <div class="two">
+          <div><h3>Install WSL from Windows</h3><pre><code>wsl --list --online
+wsl --install -d Ubuntu-24.04
+wsl -l -v</code></pre><p>Run in administrator PowerShell on supported Windows builds. Reboot if prompted and verify the distro uses WSL version 2. Follow the Foundation’s WSL instructions if you need its documented Ubuntu 22.04 setup. Keep large Linux cases in the WSL filesystem. <a href="https://learn.microsoft.com/en-us/windows/wsl/install">Microsoft WSL setup</a> · <a href="https://openfoam.org/download/windows/">Foundation WSL notes</a></p></div>
+          <div><h3>Install and smoke-test Foundation v14</h3><pre><code># Add the Foundation repository using its Ubuntu guide.
+sudo apt update
+sudo apt install openfoam14
+source /opt/openfoam14/etc/bashrc
+foamRun -help</code></pre><p>After sourcing the environment, run the backward-facing-step case below. For SU2, add the release binaries to PATH and run the upstream quick-start case with <code>SU2_CFD</code>. <a href="https://openfoam.org/download/14-ubuntu/">Foundation package and tutorial</a> · <a href="https://su2code.github.io/docs_v7/Quick-Start/">SU2 quick start</a></p></div>
+        </div>
+        <h3>Run the upstream backward-facing-step case</h3>
+        <pre><code>mkdir -p "$FOAM_RUN"
+cd "$FOAM_RUN"
+cp -r "$FOAM_TUTORIALS/incompressibleFluid/pitzDailySteady" .
+cd pitzDailySteady
+blockMesh
+foamRun
+paraFoam</code></pre>
+        <p>Open the solution in ParaView and inspect the recirculation zone downstream of the step. If you use ParaView on Windows, open an empty <code>case.foam</code> marker created in the case directory with <code>touch case.foam</code>.</p>
+        <p><strong>Production checks.</strong> Track mesh quality, conservation, steady or time-averaged quantities, mesh and time-step sensitivity, turbulence and wall-treatment assumptions, and agreement with a reference experiment. Compare the quantities a buyer can verify, such as pressure drop, flow split, or peak component temperature. <a href="https://www.grc.nasa.gov/www/wind/valid/tutorial/tutorial.html">NASA CFD verification and validation tutorial</a></p>
+      </div>
+    </details>
+
+    <details id="electronics" open>
+      <summary>Electrical and electronic engineering <span>Analog, digital, PCB and power systems</span></summary>
+      <div class="detail-body">
+        <div class="table-wrap" tabindex="0" role="region" aria-label="Electrical and electronic engineering tools">
+        <table><thead><tr><th scope="col">Workflow</th><th scope="col">Install</th><th scope="col">Industrial use and limits</th></tr></thead><tbody>
+          <tr><th scope="row">Analog and PCB</th><td>Install KiCad from its download page. Use the Schematic Editor simulator for ngspice, or install the batch binary with <code>sudo apt install ngspice</code>. <a href="https://www.kicad.org/download/">KiCad</a> · <a href="https://ngspice.sourceforge.io/download.html">ngspice</a></td><td>DC, AC, transient and supported noise analyses. Sweep tolerances and temperature in a versioned netlist. Check vendor model syntax, convergence, parasitics and bench correlation. Consider Sandia’s <a href="https://xyce.sandia.gov/">Xyce</a> for supported parallel SPICE workflows.</td></tr>
+          <tr><th scope="row">Digital RTL</th><td>Ubuntu <code>sudo apt install verilator iverilog yosys ghdl make g++</code>. In a virtual environment install <code>cocotb</code> if using Python testbenches. Verify tool versions against cocotb’s simulator matrix. <a href="https://verilator.org/guide/latest/install.html">Verilator</a> · <a href="https://yosyshq.readthedocs.io/projects/yosys/en/latest/getting_started/installation.html">Yosys</a> · <a href="https://docs.cocotb.org/en/stable/install.html">cocotb</a></td><td>Verilator compiles supported SystemVerilog to C++/SystemC, Icarus is useful for small event-driven Verilog tests, and GHDL handles VHDL. Yosys synthesizes synthesizable RTL. Check four-state semantics and coverage requirements with the intended simulator.</td></tr>
+          <tr><th scope="row">Digital physical design</th><td>Follow the OpenROAD flow setup for its supported OS and PDK. <a href="https://openroad.readthedocs.io/en/latest/main/README.html">OpenROAD docs</a></td><td>Evaluate area, timing and power across constraints and technology libraries. Manufacturing acceptance depends on the foundry, process design kit (PDK), extraction, checks and required sign-off tools. Confirm sign-off eligibility with the foundry and its accepted tool flow.</td></tr>
+          <tr><th scope="row">RF and electromagnetic fields</th><td>Install the openEMS Windows build or follow the Linux build instructions. Start with the upstream transmission-line or antenna examples. <a href="https://www.openems.de/">openEMS downloads and docs</a></td><td>Use the FDTD solver for microwave structures, antenna response and S-parameters. Refine the mesh and compare port impedance, boundaries and losses with measurements.</td></tr>
+          <tr><th scope="row">Grid and distribution</th><td>Install via <code>python -m pip install pandapower OpenDSSDirect.py</code>. <a href="https://www.pandapower.org/start/">pandapower</a> · <a href="https://dss-extensions.org/OpenDSSDirect.py/notebooks/Installation.html">OpenDSSDirect.py</a></td><td>Use pandapower for load flow and supported OPF studies, or OpenDSSDirect.py for distribution feeder studies. Check topology, voltage, transformer/line ratings and unbalance with the actual feeder model. Switching-converter waveforms require circuit or electromagnetic-transient models.</td></tr>
+        </tbody></table></div>
+        <p><strong>Analog optimization.</strong> Search stock component values with tolerance corners when the design space is small. For expensive SPICE evaluations, use space-filling trials and a surrogate or Bayesian optimization, then verify finalists with the original simulator and bench measurements. For digital optimization, use synthesis and timing feedback to compare pipelining, bit widths, clock targets and resource sharing.</p>
+      </div>
+    </details>
+
+    <details id="multiphysics" open>
+      <summary>Python interfaces for custom PDEs and HPC <span>FEM, sparse solvers and multidisciplinary models</span></summary>
+      <div class="detail-body">
+        <div class="table-wrap" tabindex="0" role="region" aria-label="Python and HPC simulation tools">
+        <table><thead><tr><th scope="col">Tool</th><th scope="col">Where it fits</th><th scope="col">Installation path</th></tr></thead><tbody>
+          <tr><th scope="row">FEniCSx / DOLFINx</th><td>Finite-element weak forms for custom heat, elasticity and transport problems. Python drives form compilation, assembly and native C++/PETSc computation. Engineering teams still supply the material models, boundary conditions and validation.</td><td>On supported Linux/macOS platforms, use an isolated conda-forge environment with <code>conda create -n fem -c conda-forge fenics-dolfinx</code> or use the project’s container. On Windows use WSL 2 for this workflow. <a href="https://fenicsproject.org/download/">Official installation paths</a></td></tr>
+          <tr><th scope="row">PETSc / petsc4py</th><td>Distributed vectors, sparse systems, preconditioners, time integration and nonlinear solves. The native solver configuration and preconditioner usually dominate performance.</td><td>Use a consistent PETSc/MPI build from the cluster or the official install instructions. Run small one-rank and multi-rank cases before submitting large jobs. <a href="https://petsc.org/main/petsc4py/install.html">petsc4py installation</a></td></tr>
+          <tr><th scope="row">OpenMDAO</th><td>Couple different physical models and optimize system-level trade-offs with analytic or approximate derivatives. Each discipline provides its own models and fidelity. NASA’s turbine-cycle paper shows an engineering application of analytic derivatives.</td><td><code>python -m pip install openmdao</code>. Run an upstream quick-start example. <a href="https://openmdao.org/newdocs/versions/latest/getting_started/getting_started.html">OpenMDAO</a> · <a href="https://ntrs.nasa.gov/citations/20170002541">NASA technical paper</a></td></tr>
+        </tbody></table></div>
+      </div>
+    </details>
+  </section>
+
+  <section class="wrap section" id="solvers">
+    <div class="section-heading"><p class="eyebrow">Optimization</p><h2>Match the algorithm to the model</h2><p>Classify the variables, constraints and derivatives before choosing a package. Check model feasibility and numerical conditioning before tuning solver settings.</p></div>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="Optimization solver selection">
+    <table><thead><tr><th scope="col">Problem</th><th scope="col">Open-source starting point</th><th scope="col">Maturity and trade-off</th></tr></thead><tbody>
+      <tr><th scope="row">Bounded calibration</th><td>SciPy <code>least_squares</code>, typically trust-region reflective. Supply a sparse or analytic Jacobian where possible.</td><td>Mature for engineering fits. Scale residuals by uncertainty, check identifiability, and validate on held-out operating conditions. Use multiple starts if the fit is nonconvex.</td></tr>
+      <tr><th scope="row">Continuous LP or QP</th><td>HiGHS for LP and continuous convex QP through supported interfaces. CVXPY can formulate convex problems and dispatch to solvers such as OSQP or Clarabel.</td><td>Mature for structured dispatch, allocation and quadratic control. Sparse matrices, scaling and warm starts can reduce runtime. Check residuals and statuses.</td></tr>
+      <tr><th scope="row">Discrete schedule or design</th><td>SciPy <code>milp</code> routes MILP to HiGHS. Use Pyomo plus <code>highspy</code> for richer algebraic models, or OR-Tools CP-SAT for integer logic and scheduling.</td><td>Mature for many LP/MILP and combinatorial workloads. Large instances can vary widely in runtime. Expect to tune the formulation, impose a time limit, and report the best feasible solution, bound and gap. SciPy <code>milp</code> handles linear objectives and constraints.</td></tr>
+      <tr><th scope="row">Smooth nonlinear design or MPC</th><td>CasADi for symbolic graphs, automatic differentiation and transcription, with Ipopt for constrained nonlinear solves. OpenMDAO for coupled discipline models.</td><td>Mature for smooth, sparse models with reliable derivatives. Ipopt returns a local solution in general. Check starting points, constraint residuals and robustness when parameters change.</td></tr>
+      <tr><th scope="row">Many shape variables and expensive CFD</th><td>SU2 adjoints where supported, or an OpenMDAO loop with solver-provided derivatives.</td><td>Adjoints can make gradient cost largely independent of the design-variable count for one objective, subject to solver and implementation. Repeated forward simulations for finite differences scale with parameter count. Verify sensitivities against selected perturbations and remeshing effects.</td></tr>
+      <tr><th scope="row">Opaque, noisy or expensive simulator</th><td>Enumerate small catalogs. For continuous low-dimensional cases, consider SciPy differential evolution or Bayesian optimization with a surrogate. Evaluate candidates in parallel where independent.</td><td>Differential evolution can use many evaluations. Surrogates reduce simulator calls when the response is learnable, and may fail near discontinuities or in high dimensions. Recheck feasible candidates with the original simulator and under uncertainty.</td></tr>
+    </tbody></table></div>
+    <p class="sources"><a href="https://docs.scipy.org/doc/scipy/tutorial/optimize.html">SciPy optimization</a> · <a href="https://highs.dev/">HiGHS</a> · <a href="https://www.cvxpy.org/install/">CVXPY</a> · <a href="https://www.pyomo.org/installation">Pyomo</a> · <a href="https://developers.google.com/optimization/cp/cp_solver">CP-SAT</a> · <a href="https://web.casadi.org/docs/">CasADi</a> · <a href="https://coin-or.github.io/Ipopt/">Ipopt</a> · <a href="https://su2code.github.io/docs/">SU2 documentation</a></p>
+    <details><summary>Install the optimization packages</summary><div class="detail-body"><pre><code>python -m pip install scipy cvxpy pyomo highspy casadi ortools
+python -c "from scipy.optimize import linprog; print(linprog([1.0], bounds=[(1, None)], method='highs').message)"</code></pre><p>Install only the families your project uses. Record solver versions, tolerances, seeds and input data. A successful exit status establishes numerical success for the specified model. Field acceptance comes from independent checks and measurements.</p></div></details>
+  </section>
+
+  <section class="performance" id="performance">
+    <div class="wrap section">
+      <div class="section-heading"><p class="eyebrow">Computational science &amp; computer science</p><h2>Where performance actually comes from</h2><p>For most engineering teams, Python is a practical interface to a compiled solver. Profile the full pipeline and move the slow kernels only after you know where the time and memory go.</p></div>
+      <div class="two">
+        <div class="chart" aria-label="Measured stencil benchmark. Python 2341.278 milliseconds, NumPy 17.681 milliseconds, C 1.761 milliseconds.">
+          <h3>One stencil, three implementations</h3>
+          <p>256 × 256 grid · 50 sweeps · median of three</p>
+          <div class="bar-row"><span>Python loops</span><div class="bar-track"><i class="bar py"></i></div><strong>2,341 ms</strong></div>
+          <div class="bar-row"><span>NumPy slices</span><div class="bar-track"><i class="bar np"></i></div><strong>17.68 ms</strong></div>
+          <div class="bar-row"><span>C, GCC <code>-O3</code></span><div class="bar-track"><i class="bar cc"></i></div><strong>1.76 ms</strong></div>
+          <small>Bar lengths use log-scaled time in milliseconds from a 1 ms origin. Shorter is faster.</small>
+        </div>
+        <div class="bench-notes">
+          <h3>What was measured</h3>
+          <p>A five-point Jacobi sweep on fixed-boundary float64 buffers, using one CPU thread. All implementations agreed at 10⁻¹⁴ absolute and relative tolerance. Timings exclude buffer setup, compilation, and correctness checks. The C measurement includes one Python-to-C call per batch.</p>
+          <p>Intel Xeon Platinum 8573C, x86-64 Linux, CPython 3.12.14, NumPy 2.3.5 and GCC 14.2. The C kernel fuses operations in one pass, while these NumPy slices perform several passes. The ratio varies with cache, shape, compiler, and implementation. A large BLAS operation may call compiled kernels from either language.</p>
+          <p><a href="#benchmark-run">Reproduce the benchmark ↓</a></p>
+        </div>
+      </div>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Language trade-offs for simulation">
+      <table><thead><tr><th scope="col">Language or layer</th><th scope="col">Where to use it</th><th scope="col">Costs and caveats</th></tr></thead><tbody>
+        <tr><th scope="row">Python + NumPy/SciPy</th><td>Data ingest, solver orchestration, calibration, visualization and automated studies. Dense BLAS, sparse routines, or subprocess solvers do substantial compiled work.</td><td>Per-element Python loops, repeated callbacks, copies, serialization and temporary arrays can dominate fine-grained workloads. Batch calls across boundaries and profile first.</td></tr>
+        <tr><th scope="row">Numba / JAX</th><td>Numba for CPU loops that fit its compilation subset. JAX for differentiable, batched array kernels and accelerator workloads.</td><td>Measure cold compile and warm execution separately. Synchronize JAX timing with <code>block_until_ready()</code>, include transfers where appropriate, and confirm precision and device placement.</td></tr>
+        <tr><th scope="row">C / C++ / Fortran</th><td>Fused kernels, SIMD, MPI/OpenMP, memory layout control, existing scientific libraries and device portability layers such as Kokkos.</td><td>More development and build complexity, especially with MPI/accelerator variants. Reuse established numerical kernels where possible. C/Fortran supply established interfaces, and C++ is common in full solvers.</td></tr>
+        <tr><th scope="row">Rust</th><td>Memory-safe services, file/mesh preprocessing, parallel infrastructure and fast custom CPU kernels. PyO3 can expose Rust kernels to Python.</td><td>Benchmark optimized releases. For specialized CFD, GPU or distributed sparse solvers, check available bindings and parallel backends before committing. Existing native libraries may remain the best solver path.</td></tr>
+        <tr><th scope="row">Julia</th><td>Custom numerical algorithms and modeling in one language, especially ODE/DAE and scientific machine learning via SciML.</td><td>Account for compilation latency, versioned environments, integration and team operations. Include Julia in a benchmark if the intended numerical stack is available.</td></tr>
+      </tbody></table></div>
+      <p class="sources"><a href="https://numba.readthedocs.io/en/stable/user/performance-tips.html">Numba</a> · <a href="https://docs.jax.dev/en/latest/async_dispatch.html">JAX timing</a> · <a href="https://kokkos.org/kokkos-core-wiki/">Kokkos</a> · <a href="https://pyo3.rs/">PyO3</a> · <a href="https://docs.sciml.ai/DiffEqDocs/">Julia SciML</a></p>
+      <div class="note"><strong>How to benchmark an industrial workload.</strong> Compare the same grid, physics, precision, tolerances and output error. Record preprocessing, solve and postprocessing separately, then measure end-to-end time, peak memory, throughput and cost. Test strong scaling at fixed problem size and weak scaling at fixed work per rank. Avoid oversubscribing BLAS/OpenMP threads inside MPI ranks. Sweep many independent cases in parallel before trying to distribute each solve. Examine sparse access, halo exchange and GPU transfer costs alongside FLOP counts. For this stencil, the work is O(N·S) and memory is O(N) for N grid cells and S sweeps. These bounds are shared by all three implementations.</div>
+    </div>
+  </section>
+
+  <section class="wrap section" id="industry">
+    <div class="section-heading"><p class="eyebrow">Commercial prospects · 商业前景</p><h2>Start with decisions customers can measure</h2><p>The ranking is an engineering judgment for a small team entering the U.S. market. It weighs access to data, pilot cost, repeatability, and ease of measuring customer value. Local tariffs, procurement, and data access can change the order.</p></div>
+    <div class="case-grid">
+      <article class="case"><p class="case-type">Fastest pilot with facility data</p><h3>Industrial pump and fan energy</h3><p><strong>Who buys it.</strong> plant energy managers, facilities teams and energy service companies. Fit pump and system curves to flow, head and power data. Compare throttling, variable speed control and pump staging over the measured duty cycle.</p><p><strong>How to verify value.</strong> measured kWh per delivered unit, minimum service pressure and stable operation. Include maintenance costs and normalize for production. DOE publishes pump assessment resources.</p><a href="https://betterbuildingssolutioncenter.energy.gov/better-plants/pumps">DOE Better Plants pump resources ↗</a></article>
+      <article class="case"><p class="case-type">Repeatable software deployment</p><h3>Fleet-depot charging</h3><p><strong>Who buys it.</strong> fleet operators and charging integrators. Solve an LP or MILP for charging power, departure readiness, site capacity and utility tariff, then update on a rolling horizon.</p><p><strong>How to verify value.</strong> peak kW, cost from the real tariff, and on-time departure charge. Replay historic arrivals, failed chargers and building-load spikes before enabling live control.</p><a href="https://www.energy.gov/cmei/femp/smart-charge-management-applications-and-benefits-federal-fleets">DOE smart charge management ↗</a></article>
+      <article class="case"><p class="case-type">High-value engineering service</p><h3>Data-center and enclosure cooling</h3><p><strong>Who buys it.</strong> colocation operators, liquid-cooling integrators and enclosure OEMs. Start with a calibrated thermal network. Run CFD on finalists to evaluate hot spots, bypass flows, pressure drop and fan or pump power.</p><p><strong>How to verify value.</strong> worst credible inlet or component temperature, thermal margin during failures, and cooling energy at the same IT load. LBNL documents U.S. data-center energy growth scenarios. Revenue depends on pilot access and the value of reduced cooling energy or added capacity.</p><a href="https://eta.lbl.gov/publications/united-states-data-center-energy-2025">LBNL data center energy report ↗</a></article>
+      <article class="case"><p class="case-type">Best fit with electronics expertise</p><h3>Power electronics and PCB test automation</h3><p><strong>Who buys it.</strong> inverter, drive, power-supply and industrial sensor manufacturers. Assemble repeatable SPICE corner sweeps and HDL regression checks. Co-design switching strategies, component selections and thermal limits.</p><p><strong>How to verify value.</strong> measured efficiency, ripple, thermal margin and defect detection. Substituting ideal devices for vendor switching behavior can miss parasitics and EMI. Close the loop with bench tests and the target compliance workflow.</p><a href="https://www.kicad.org/discover/spice/">KiCad SPICE workflow ↗</a></article>
+    </div>
+    <p><strong>中国市场落地。</strong> For a pilot in mainland China, use the customer’s tariff, voltage class, contract and operating calendar. Jiangsu’s provincial notice illustrates how time-of-use rules and eligibility can vary by customer type. For a first sale, quote a fixed-fee baseline and an instrumented pilot with an agreed measurement period. A recurring subscription is more plausible for ongoing dispatch and reporting, while CFD projects often start as engineering services. <a href="https://fgw.nanjing.gov.cn/njsfzhggwyh/202505/t20250506_5140665.html">Jiangsu time-of-use policy</a></p>
+    <div class="savings">
+      <div><h3>Screen a pump retrofit</h3><p>Estimate annual electricity savings and simple payback using the synthetic pump example. Substitute measured annual savings for a real project. The calculator uses a flat energy rate and excludes maintenance, financing and tariff demand charges.</p></div>
+      <div class="calc-inputs">
+        <label for="energy">Energy saved (kWh/year)</label><input type="number" id="energy" min="0" step="1" value="17877">
+        <label for="rate">Electricity rate (USD/kWh)</label><input type="number" id="rate" min="0" step="0.01" value="0.15">
+        <label for="cost">Installed cost (USD)</label><input type="number" id="cost" min="0" step="100" value="8000">
+        <output id="payback" for="energy rate cost" aria-live="polite">$2,682/year · 2.98 years</output>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap section" id="examples">
+    <div class="section-heading"><p class="eyebrow">Hands-on</p><h2>Run the reference examples</h2><p>Clone the repository and read each model’s assumptions before changing its inputs. The examples use synthetic or idealized inputs. Their outputs illustrate the methods and give you a reproducible starting point for validation.</p></div>
+    <pre><code>git clone https://github.com/zmath01/optimization-simulation.git
+cd optimization-simulation/docs/examples
+python -m pip install -r requirements.txt</code></pre>
+    <div class="example-grid">
+      <article><h3>Pump curve calibration</h3><pre><code>python pump.py</code></pre><p>Fit the static head and flow-dependent term of a system curve with bounded robust least squares. At each required duty point, set the lowest speed that meets head. Compare estimated annual electrical energy at equal delivered flow.</p><p class="result">34,929 → 17,052 kWh/year in the synthetic scenario</p><p>Measure the actual motor/pump efficiency map and operating envelope before using this method to make a retrofit decision.</p><a href="examples/pump.py" download>Download pump.py ↓</a></article>
+      <article><h3>Depot charging schedule</h3><pre><code>python depot.py</code></pre><p>Minimize energy cost plus a peak penalty using HiGHS. The LP constrains per-vehicle plug-in windows, charging limits, site capacity, and energy by departure.</p><p class="result">108.04 → 67.72 kW peak in the synthetic day</p><p>Replace the toy peak penalty with the actual monthly tariff and billing-period demand history. Add binary charger assignments to a MILP when vehicles compete for chargers.</p><a href="examples/depot.py" download>Download depot.py ↓</a></article>
+      <article><h3>Analog filter sizing</h3><pre><code>python filter.py
+ngspice -b filter.cir</code></pre><p>Enumerate 3,969 two-stage RC combinations, each at 16 independent tolerance corners. Require at most 0.5 dB passband loss at 100 Hz and maximize 10 kHz attenuation. Nominal SPICE checks the analytic transfer function.</p><p class="result">−0.449 dB at 100 Hz and −50.688 dB at 10 kHz in separate worst cases</p><p>The model assumes an ideal buffer and omits source/load impedance, op-amp bandwidth and noise. Replace the buffer model and check those effects for a real board.</p><a href="examples/filter.py" download>Download filter.py ↓</a> · <a href="examples/filter.cir" download>Download filter.cir ↓</a></article>
+      <article><h3>Digital PWM verification</h3><pre><code>iverilog -g2012 -s pwm_tb -o pwm_sim pwm.sv pwm_tb.sv
+vvp ./pwm_sim
+verilator --lint-only --top-module pwm pwm.sv
+yosys -p 'read_verilog -sv pwm.sv; synth -top pwm -noabc; stat'</code></pre><p>Check the number of high samples per 16-cycle period at every 4-bit duty setting. Synthesize the same RTL to inspect its logic resources. For production hardware, add coverage for reset timing and asynchronous input handling, then use technology-mapped timing reports and bench measurements.</p><a href="examples/pwm.sv" download>Download pwm.sv ↓</a> · <a href="examples/pwm_tb.sv" download>Download pwm_tb.sv ↓</a></article>
+    </div>
+    <details id="benchmark-run" open><summary>Reproduce the stencil benchmark</summary><div class="detail-body"><pre><code># Linux or WSL, from docs/examples
+sudo apt install build-essential
+cc -std=c11 -O3 -fPIC -shared stencil.c -o stencil.so
+python benchmark.py
+python benchmark.py --side 128 --steps 25 --repeats 5</code></pre><p>Use the default configuration to compare with the published timings. On macOS, compile with <code>cc -O3 -dynamiclib stencil.c -o stencil.dylib</code> and pass <code>--library stencil.dylib</code>. The script checks agreement after every measured run. <a href="examples/benchmark.py" download>Download benchmark.py ↓</a> · <a href="examples/stencil.c" download>Download stencil.c ↓</a></p></div></details>
+    <div class="note"><strong>What to carry into production.</strong> Keep units, data provenance and versioned inputs alongside the model. Check a limiting case or reference benchmark first, validate on independent operating data, propagate measurement uncertainty, and define acceptance thresholds before the pilot. Pin solver versions and review package, model and PDK licenses for the way you intend to distribute the work.</div>
+  </section>
+</main>
+<footer><div class="wrap"><strong>Open Simulation &amp; Optimization</strong><a href="https://github.com/zmath01/optimization-simulation">Source repository ↗</a></div></footer>
+</body>
+</html>
