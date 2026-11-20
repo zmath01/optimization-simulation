@@ -109,5 +109,10 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: .6rem 1.8rem; justify-conten
   .chart, .bench-notes, .case, .example-grid article { padding-inline: .95rem; }
 }
 
-#pulse-result { color: var(--green); }
-#pulse-hit-rate { width: 100%; margin-top: .45rem; accent-color: var(--green); }
+[data-pulse-calculator] output { color: var(--green); }
+[data-pulse-calculator] progress { width: 100%; margin-top: .45rem; accent-color: var(--green); }
+
+.plc-translation .translation-title { font-size: clamp(2.4rem, 6.2vw, 5.4rem); }
+.plc-translation .section-heading h3 { font-size: clamp(1.9rem, 4.1vw, 3.25rem); }
+.plc-translation h4 { font-size: 1.35rem; line-height: 1.12; margin: 0 0 .65em; letter-spacing: -.036em; }
+.translation-nav { padding-block: .9rem; border-bottom: 1px solid var(--line); }
