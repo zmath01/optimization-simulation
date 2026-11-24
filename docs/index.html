@@ -14,7 +14,7 @@
   <div class="wrap top-inner">
     <a class="brand" href="#main"><span aria-hidden="true">∿</span> Open Simulation</a>
     <nav aria-label="Guide sections">
-      <a href="#install">Install</a><a href="#solvers">Solvers</a><a href="#performance">HPC</a><a href="#industry">Industry</a><a href="#examples">Examples</a><a href="plc-embedded.html">PLC / Embedded</a>
+      <a href="#install">Install</a><a href="#solvers">Solvers</a><a href="algorithms.html">Algorithm Lab</a><a href="#performance">HPC</a><a href="#industry">Industry</a><a href="#examples">Examples</a><a href="plc-embedded.html">PLC / Embedded</a>
     </nav>
     <a class="repo" href="https://github.com/zmath01/optimization-simulation">GitHub ↗</a>
   </div>
@@ -123,6 +123,7 @@ paraFoam</code></pre>
 
   <section class="wrap section" id="solvers">
     <div class="section-heading"><p class="eyebrow">Optimization</p><h2>Match the algorithm to the model</h2><p>Classify the variables, constraints and derivatives before choosing a package. Check model feasibility and numerical conditioning before tuning solver settings.</p></div>
+    <p><a href="algorithms.html">Try the interactive Algorithm Lab</a> to compare gradients, curvature and active bounds on the same inputs.</p>
     <div class="table-wrap" tabindex="0" role="region" aria-label="Optimization solver selection">
     <table><thead><tr><th scope="col">Problem</th><th scope="col">Open-source starting point</th><th scope="col">Maturity and trade-off</th></tr></thead><tbody>
       <tr><th scope="row">Bounded calibration</th><td>SciPy <code>least_squares</code>, typically trust-region reflective. Supply a sparse or analytic Jacobian where possible.</td><td>Mature for engineering fits. Scale residuals by uncertainty, check identifiability, and validate on held-out operating conditions. Use multiple starts if the fit is nonconvex.</td></tr>

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Compare numerical optimization algorithms on interactive convex, nonconvex and box-constrained problems.">
+  <title>Optimization Algorithm Lab</title>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./solver-lab.css">
+  <script type="module" src="./solver-lab.mjs"></script>
+</head>
+<body>
+  <a class="skip" href="#lab">Skip to the lab</a>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="./"><span aria-hidden="true">∑</span> Open Simulation &amp; Optimization</a>
+      <nav aria-label="Guide"><a href="./#solvers">Solver guide</a><a href="./plc-embedded.html">PLC and embedded</a></nav>
+    </div>
+  </header>
+  <main class="wrap section" id="lab">
+    <div class="section-heading">
+      <h1>Optimization<br>Algorithm Lab</h1>
+      <p>Use the same starting point to compare search directions. Then impose actuator limits and check whether the solver is still optimal.</p>
+    </div>
+    <div class="solver-switch" role="group" aria-label="Select a solver lab">
+      <button type="button" data-lab="unconstrained" aria-pressed="true">Smooth optimization</button>
+      <button type="button" data-lab="constrained" aria-pressed="false">Bounded quadratic</button>
+    </div>
+    <section id="unconstrained" class="solver-grid" aria-labelledby="smooth-title">
+      <div class="solver-body">
+        <h2 id="smooth-title">Search directions</h2>
+        <canvas id="landscape" class="solver-plot landscape" aria-label="Objective landscape and optimizer paths"></canvas>
+        <canvas id="convergence" class="solver-plot convergence" aria-label="Log-scale objective versus accepted iterations"></canvas>
+        <div class="solver-key" aria-label="Method colors"><span class="gd">Gradient descent</span><span class="newton">Damped Newton</span><span class="bfgs">BFGS</span></div>
+        <div class="table-wrap"><table class="metrics-table"><thead><tr><th scope="col">Method</th><th scope="col">Steps / f calls</th><th scope="col">Final f</th><th scope="col">Gradient norm</th><th scope="col">Status</th></tr></thead><tbody id="smooth-results"></tbody></table></div>
+      </div>
+      <aside class="solver-controls">
+        <label for="problem">Objective</label>
+        <select id="problem"><option value="quadratic">Rotated quadratic</option><option value="rosenbrock">Rosenbrock valley</option></select>
+        <div class="solver-value"><label for="start-x">Starting x</label><output id="start-x-value" for="start-x">−2.00</output></div><input type="range" id="start-x" min="-3" max="3" step=".02" value="-2">
+        <div class="solver-value"><label for="start-y">Starting y</label><output id="start-y-value" for="start-y">1.40</output></div><input type="range" id="start-y" min="-2" max="3" step=".02" value="1.4">
+        <div class="solver-value"><label for="budget">Iteration limit</label><output id="budget-value" for="budget">70</output></div><input type="range" id="budget" min="1" max="180" value="70">
+        <button id="reset-start" type="button">Restore example</button>
+        <p class="solver-help">Click the landscape to choose a starting point, or use the sliders. Each method uses the same Armijo backtracking rule.</p>
+      </aside>
+      <div class="solver-notes">
+        <p>Gradient descent uses the negative gradient. Damped Newton shifts the Hessian if it is indefinite or nearly singular. BFGS estimates an inverse Hessian from successive steps and resets its estimate if the curvature check fails.</p>
+        <p>The plot uses a floor of 10⁻¹² for zero or smaller objective values. Gradient norm is evaluated separately and the convergence tolerance is 10⁻⁶. Function call counts include the initial objective evaluation and line-search trials.</p>
+      </div>
+    </section>
+    <section id="constrained" class="solver-grid" aria-labelledby="box-title" hidden>
+      <div class="solver-body">
+        <h2 id="box-title">Active actuator bounds</h2>
+        <canvas id="box-plot" class="solver-plot landscape" aria-label="Feasible box and projected-gradient iterates"></canvas>
+        <div class="solver-key"><span class="gd">Projected gradient</span><span class="newton">Clip the target</span><span class="bfgs">Exact optimum</span></div>
+        <div class="table-wrap"><table class="metrics-table"><thead><tr><th scope="col">Method</th><th scope="col">Solution</th><th scope="col">Objective</th><th scope="col">Optimality residual</th></tr></thead><tbody id="box-results"></tbody></table></div>
+      </div>
+      <aside class="solver-controls">
+        <div class="solver-value"><label for="desired-x">Desired x</label><output id="desired-x-value" for="desired-x">2.70</output></div><input type="range" id="desired-x" min="-.5" max="3.6" step=".05" value="2.7">
+        <div class="solver-value"><label for="desired-y">Desired y</label><output id="desired-y-value" for="desired-y">0.30</output></div><input type="range" id="desired-y" min="-.5" max="2.6" step=".05" value=".3">
+        <div class="solver-value"><label for="upper-x">Upper bound for x</label><output id="upper-x-value" for="upper-x">1.60</output></div><input type="range" id="upper-x" min="0" max="2.6" step=".05" value="1.6">
+        <div class="solver-value"><label for="upper-y">Upper bound for y</label><output id="upper-y-value" for="upper-y">1.60</output></div><input type="range" id="upper-y" min="0" max="2.4" step=".05" value="1.6">
+        <div class="solver-value"><label for="box-budget">Iteration limit</label><output id="box-budget-value" for="box-budget">30</output></div><input type="range" id="box-budget" min="1" max="100" value="30">
+        <p class="solver-help">The lower bounds are zero. Reduce either upper bound to model a derated actuator.</p>
+      </aside>
+      <div class="solver-notes">
+        <p>The positive-definite quadratic has an off-diagonal term, so clipping one variable can change the best value of the other. Projected gradient checks the norm of <code>x − projection(x − gradient)</code>. The reference enumerates the box edges and checks the feasible interior candidate.</p>
+      </div>
+    </section>
+    <p class="sources solver-sources"><a href="https://web.stanford.edu/~boyd/cvxbook/">Convex Optimization, Boyd and Vandenberghe</a> · <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html">SciPy solver documentation</a> · <a href="./#solvers">Return to algorithm selection</a></p>
+  </main>
+</body>
+</html>
